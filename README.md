@@ -120,4 +120,4 @@ Set the frontend's API URL with the `VITE_API_URL` environment variable.
 
 ## 👤 Author
 
-Made by **ayusshdixit** — [GitHub](https://github.com/ayusshdixit)
+Made by **Samratdixit** — [GitHub](https://github.com/ayusshdixit)
