@@ -6,7 +6,6 @@
 ![Node](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
 ![Gemini](https://img.shields.io/badge/AI-Google%20Gemini-4285F4?logo=google&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue)
 
 A full-stack MERN app that turns your **resume, self-description and a target job description** into a personalised interview-prep report using **Google Gemini** — and can even generate a tailored, ATS-friendly resume PDF.
 
@@ -67,8 +66,8 @@ GEN_AI/
 
 ### 1. Clone
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/ayusshdixit/GEN_AI-AI-Interview-Preparation-Assistant.git
+cd GEN_AI-AI-Interview-Preparation-Assistant
 ```
 
 ### 2. Backend
@@ -119,10 +118,6 @@ Set the frontend's API URL with the `VITE_API_URL` environment variable.
 - Use a strong `JWT_SECRET`
 - Rotate any key that has ever been shared or committed
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## 👤 Author
 
-Made by **<your-name>** — [GitHub](https://github.com/<your-username>)
+Made by **ayusshdixit** — [GitHub](https://github.com/ayusshdixit)
