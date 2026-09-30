@@ -1,6 +1,6 @@
 # 🎯 GEN_AI — AI Interview Preparation Assistant
 
-> 🔗 **Live Demo:** _coming soon — will be added after deployment_
+> 🔗 **Live Demo:** [https://ayusshdixit.github.io/GEN_AI-AI-Interview-Preparation-Assistant/]
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![Node](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)

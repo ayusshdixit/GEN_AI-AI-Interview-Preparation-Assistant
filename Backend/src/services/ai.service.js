@@ -132,6 +132,23 @@ const ai = new GoogleGenAI({
 // Model is configurable so you can switch when a model's free daily quota runs out
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3-flash-preview"
 
+// Retries temporary Gemini failures (503 overloaded, 500, 504) so users don't have to click again.
+// A 429 (daily quota used up) is NOT retried, because waiting a few seconds won't fix it.
+async function generateWithRetry(params, retries = 3) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            return await ai.models.generateContent(params)
+        } catch (err) {
+            const status = err.status ?? err.code ?? Number((err.message || "").match(/"code":\s*(\d+)/)?.[1])
+            const retryable = [500, 503, 504].includes(status)
+            if (!retryable || attempt === retries) throw err
+            const wait = 2000 * 2 ** attempt
+            console.log(`Gemini returned ${status}, retrying in ${wait / 1000}s (attempt ${attempt + 1}/${retries})`)
+            await new Promise(resolve => setTimeout(resolve, wait))
+        }
+    }
+}
+
 // Zod 4 has a built-in JSON Schema converter (zod-to-json-schema returns an empty schema for Zod 4)
 function toJsonSchema(schema) {
     const jsonSchema = z.toJSONSchema(schema)
@@ -173,7 +190,7 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
                         Job Description: ${jobDescription}
 `
 
-    const response = await ai.models.generateContent({
+    const response = await generateWithRetry({
         model: GEMINI_MODEL,
         contents: prompt,
         config: {
@@ -227,7 +244,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         The resume should not be so lengthy, it should ideally be 1-2 pages long when converted to PDF. Focus on quality rather than quantity and make sure to include all the relevant information that can increase the candidate's chances of getting an interview call for the given job description.
                     `
 
-    const response = await ai.models.generateContent({
+    const response = await generateWithRetry({
         model: GEMINI_MODEL,
         contents: prompt,
         config: {
