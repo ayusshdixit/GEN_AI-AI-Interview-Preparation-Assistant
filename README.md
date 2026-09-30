@@ -1,6 +1,8 @@
 # 🎯 GEN_AI — AI Interview Preparation Assistant
 
-> 🔗 **Live Demo:** [https://ayusshdixit.github.io/GEN_AI-AI-Interview-Preparation-Assistant/]
+> 🔗 **Live Demo:** [https://ayusshdixit.github.io/GEN_AI-AI-Interview-Preparation-Assistant/](https://ayusshdixit.github.io/GEN_AI-AI-Interview-Preparation-Assistant/)
+>
+> ⏳ _The backend runs on a free tier, so the first request after inactivity can take up to a minute. The AI uses the Gemini free tier, which has a small daily limit — if generation fails, please try again later._
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![Node](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
@@ -12,7 +14,7 @@ A full-stack MERN app that turns your **resume, self-description and a target jo
 ## ✨ Features
 
 - 🔐 **Authentication** — register / login / logout with JWT stored in cookies and a token blacklist on logout
-- 📄 **Resume upload** — upload a PDF resume (max 3 MB), parsed server-side
+- 📄 **Resume upload** — upload a PDF resume (max 3 MB, parsed server-side) or just write a short self-description
 - 🤖 **AI interview report** powered by Gemini, including:
   - Match score (1–100) between your profile and the job
   - Technical questions with interviewer intention + how to answer
@@ -24,7 +26,11 @@ A full-stack MERN app that turns your **resume, self-description and a target jo
 
 ## 📸 Screenshots
 
-_Add screenshots here, e.g. `![Home](docs/home.png)`, `![Report](docs/report.png)`_
+| Home | Report |
+|------|--------|
+| ![Home page](docs/project-demo-1.png) | ![Interview report](docs/project-demo-2.png) |
+
+📄 [Sample generated resume (PDF)](docs/report1.pdf)
 
 ## 🧱 Tech Stack
 
@@ -83,7 +89,11 @@ npm run dev              # http://localhost:3000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=a_long_random_string
 GOOGLE_GENAI_API_KEY=your_gemini_api_key
+FRONTEND_URL=            # production only, e.g. https://<user>.github.io
+GEMINI_MODEL=            # optional, defaults to gemini-3-flash-preview
 ```
+
+Optional: `Frontend/.env` with `VITE_API_URL=http://localhost:3000` (this is also the default).
 
 ### 3. Frontend
 ```bash
@@ -100,17 +110,27 @@ npm run dev              # http://localhost:5173
 | POST | `/api/auth/login` | – | Log in |
 | GET | `/api/auth/logout` | – | Log out & blacklist token |
 | GET | `/api/auth/get-me` | ✅ | Current user |
-| POST | `/api/interview/` | ✅ | Generate report (`multipart/form-data`: `resume`, `selfDescription`, `jobDescription`) |
+| POST | `/api/interview/` | ✅ | Generate report (`multipart/form-data`: `jobDescription` + `resume` and/or `selfDescription`) |
 | GET | `/api/interview/` | ✅ | List your reports |
 | GET | `/api/interview/report/:interviewId` | ✅ | Get one report |
 | POST | `/api/interview/resume/pdf/:interviewReportId` | ✅ | Generate tailored resume PDF |
 
 ## 🌐 Deployment
 
-- **Frontend** → GitHub Pages (static site) via the included GitHub Actions workflow
-- **Backend** → needs a Node host (Render, Railway, Fly.io, etc.); GitHub Pages cannot run servers
+| Part | Host | How |
+|------|------|-----|
+| Frontend | GitHub Pages | `.github/workflows/deploy.yml` builds `Frontend/` and publishes it on every push to `main` |
+| Backend | Render (Web Service) | Root directory `Backend`, start command `npm start` |
 
-Set the frontend's API URL with the `VITE_API_URL` environment variable.
+**Render settings**
+
+- Build command: `npm install && npx puppeteer browsers install chrome` (Chrome is needed for the resume PDF)
+- Environment variables: `MONGO_URI`, `JWT_SECRET`, `GOOGLE_GENAI_API_KEY`, `NODE_ENV=production`, `FRONTEND_URL=https://<user>.github.io` (no path, no trailing slash), optional `GEMINI_MODEL`
+- MongoDB Atlas → Network Access must allow Render (e.g. `0.0.0.0/0`)
+
+**Frontend build**
+
+The workflow sets `VITE_API_URL` to the Render service URL. The app uses a hash router, so page refreshes work on GitHub Pages.
 
 ## 🔒 Security Notes
 
@@ -120,4 +140,4 @@ Set the frontend's API URL with the `VITE_API_URL` environment variable.
 
 ## 👤 Author
 
-Made by **Samratdixit** — [GitHub](https://github.com/ayusshdixit)
+Made by **ayusshdixit** — [GitHub](https://github.com/ayusshdixit)
