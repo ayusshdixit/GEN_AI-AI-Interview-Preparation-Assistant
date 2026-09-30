@@ -28,7 +28,7 @@ A full-stack MERN app that turns your **resume, self-description and a target jo
 
 | Home | Report |
 |------|--------|
-| ![Home page](docs/project-demo-1.png) | ![Interview report](docs/project-demo-2.png) |
+| ![Home page](docs/project-demo-1.png) | ![Interview report](docs/report1.pdf) |
 
 📄 [Sample generated resume (PDF)](docs/report1.pdf)
 
