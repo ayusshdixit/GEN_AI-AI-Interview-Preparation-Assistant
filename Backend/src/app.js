@@ -29,8 +29,16 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+// Allowed frontend origins: localhost for dev + FRONTEND_URL (comma separated) for production
+const allowedOrigins = [
+    "http://localhost:5173",
+    ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(",").map(u => u.trim()) : [])
+]
+
+app.set("trust proxy", 1)
+
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true
 }))
 

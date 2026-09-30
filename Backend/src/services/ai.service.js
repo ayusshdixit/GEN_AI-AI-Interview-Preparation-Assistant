@@ -123,12 +123,21 @@
 
 const { GoogleGenAI } = require("@google/genai")
 const { z } = require("zod")
-const { zodToJsonSchema } = require("zod-to-json-schema")
 const puppeteer = require("puppeteer")
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
 })
+
+// Model is configurable so you can switch when a model's free daily quota runs out
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3-flash-preview"
+
+// Zod 4 has a built-in JSON Schema converter (zod-to-json-schema returns an empty schema for Zod 4)
+function toJsonSchema(schema) {
+    const jsonSchema = z.toJSONSchema(schema)
+    delete jsonSchema.$schema
+    return jsonSchema
+}
 
 
 const interviewReportSchema = z.object({
@@ -165,11 +174,11 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 `
 
     const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: prompt,
         config: {
             responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(interviewReportSchema),
+            responseJsonSchema: toJsonSchema(interviewReportSchema),
         }
     })
 
@@ -181,7 +190,7 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] })
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "networkidle0" })
 
@@ -219,11 +228,11 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                     `
 
     const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: prompt,
         config: {
             responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(resumePdfSchema),
+            responseJsonSchema: toJsonSchema(resumePdfSchema),
         }
     })
 

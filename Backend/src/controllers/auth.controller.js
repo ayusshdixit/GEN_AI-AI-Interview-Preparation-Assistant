@@ -1,3 +1,4 @@
+const cookieOptions = require("../config/cookie")
 const userModel = require('../models/user.model')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -47,7 +48,7 @@ async function registerUserControl(req, res) {
         { expiresIn: "1d" }
     )
 
-    res.cookie('Token', token)
+    res.cookie('Token', token, cookieOptions)
 
     res.status(200).json({
         message: "User registered successfully",
@@ -94,7 +95,7 @@ async function loginUserController(req, res) {
         { expiresIn: "1d" }
     )
 
-    res.cookie('Token', token)
+    res.cookie('Token', token, cookieOptions)
     res.status(200).json({
         message: "LoggedIn successfully",
         user: {
@@ -120,7 +121,7 @@ async function logoutUserController(req, res) {
         await tokenBlacklistModel.create({ token })
     }
 
-    res.clearCookie("Token")
+    res.clearCookie("Token", cookieOptions)
 
     res.status(200).json({
         message: "User logged out successfully!"
